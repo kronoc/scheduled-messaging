@@ -3,8 +3,9 @@ Scheduled Messaging Module
 
 This module provides a few features to make life working with JMS and Spring a little easier:
 
-* A message producer to make it easier to send JMS messages without faffing about.
-* A drop in replacement for Spring's DefaultMessageListenerContainer which lets you use something similar to ActiveMQ 5.4's delayed message functionality without having to use that broker.
+* A message producer to make it easier to send JMS messages.
+* A means of sending and recieving delayed messages.
+* A drop-in replacement for Spring's DefaultMessageListenerContainer which lets you use something similar to ActiveMQ 5.4's delayed message functionality without having to use that broker.
 
 Maven Dependency
 -----------------
@@ -85,26 +86,25 @@ To use the MessageProducer  you need to define one jms template and one or many 
 	<property name="destination" ref="my.queue" />
    </bean>
 </beans>
-{code}
 
 ### Java code
 
 Call sendTextMessage() or sendObjectMessage() on the messageProducer to send the messages. eg:
 
 
-public class Sender {
+	public class Sender {
 
-    @Autowired
-    private MessageProducer messageProducer;
+    	@Autowired
+    	private MessageProducer messageProducer;
 
-     public void sendMessage(String myMessage, String someHeader, String someOtherHeader) throws JMSException {
-         Map<String, Serializable> headers = new HashMap<String, Serializable>();
-         headers.put(MessageConstants.SOMETHING, someHeader);
-         headers.put(MessageConstants.SOMETHING_ELSE, someOtherHeader);
-         messageProducer.sendTextMessage(myMessage, headers);
-    }
+     	public void sendMessage(String myMessage, String someHeader, String someOtherHeader) throws JMSException {
+        	Map<String, Serializable> headers = new HashMap<String, Serializable>();
+        	headers.put(MessageConstants.SOMETHING, someHeader);
+        	headers.put(MessageConstants.SOMETHING_ELSE, someOtherHeader);
+        	messageProducer.sendTextMessage(myMessage, headers);
+    	}
 
-}
+	}
 
 
 ### Sending Delayed Messages
@@ -124,12 +124,12 @@ As above, but also set up a listener-container and consumer (a POJO which implem
 
 When sending message you wish to delay set the header AMQ_SCHEDULED_DELAY with a long value of the number of millis you want your message delayed. eg:
 
-static final String AMQ_SCHEDULED_DELAY = "AMQ_SCHEDULED_DELAY";
+	static final String AMQ_SCHEDULED_DELAY = "AMQ_SCHEDULED_DELAY";
 
-...
+	...
 
-long delayMillis = 15*60*1000;
-Map<String, Serializable> headers = new HashMap();
-headers.put(AMQ_SCHEDULED_DELAY, delayMillis);
-myMessageProducer.sendTextMessage("Hello World!", headers);
+	long delayMillis = 15*60*1000;
+	Map<String, Serializable> headers = new HashMap();
+	headers.put(AMQ_SCHEDULED_DELAY, delayMillis);
+	myMessageProducer.sendTextMessage("Hello World!", headers);
 
