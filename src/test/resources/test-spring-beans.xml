@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:amq="http://activemq.apache.org/schema/core"
+        xmlns:jms="http://www.springframework.org/schema/jms"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                            http://activemq.apache.org/schema/core
+                            http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd
+                            http://www.springframework.org/schema/jms
+                            http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:component-scan base-package="net.conor.jms"/>
+
+    <!--start the broker for the test -->
+     <bean id="brokerInternal" class="org.apache.activemq.xbean.BrokerFactoryBean">
+        <property name="config" value="classpath:activemq-internal.xml"/>
+        <property name="start" value="true"/>
+    </bean>
+
+
+    <!-- A JMS connection factory, using ActiveMQ. Change the broker url for your own purposes. -->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
+          p:brokerURL="tcp://localhost:61615"/>
+
+    <amq:queue id="exampleQueue" physicalName="sched-jms.example"/>
+
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate"  autowire="no">
+		<property name="connectionFactory">
+			<ref bean="connectionFactory" />
+		</property>
+	</bean>
+
+
+    <bean id="exampleMessageProducer" class="net.conor.jms.MessageProducer"
+		scope="singleton" autowire="no">
+		<property name="jmsTemplate">
+			<ref bean="jmsTemplate" />
+		</property>
+		<property name="destination">
+			<ref bean="exampleQueue" />   <!-- we tie a producer to a queue, if you have more queues, make more producer beans with different names -->
+		</property>
+	</bean>
+
+</beans>
