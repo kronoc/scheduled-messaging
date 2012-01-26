@@ -3,9 +3,9 @@ Scheduled Messaging Module
 
 This module provides a few features to make life working with JMS and Spring a little easier:
 
-* A message producer to make it easier to send JMS messages.
-* A means of sending and recieving delayed messages.
-* A drop-in replacement for Spring's DefaultMessageListenerContainer which lets you use something similar to ActiveMQ 5.4's delayed message functionality without having to use that broker.
+* A message producer that abstracts some of the code around sending messages using Spring JMS.
+* A means of sending delayed messages.
+* A means of receiving delayed messages using a drop-in replacement for Spring's DefaultMessageListenerContainer.
 
 Maven Dependency
 -----------------
