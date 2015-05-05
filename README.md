@@ -133,3 +133,7 @@ When sending message you wish to delay set the header AMQ_SCHEDULED_DELAY with a
 	headers.put(AMQ_SCHEDULED_DELAY, delayMillis);
 	myMessageProducer.sendTextMessage("Hello World!", headers);
 
+Gotchas
+-------
+
+When using ActiveMQ, watch out for issues around paging problems with message selectors.
